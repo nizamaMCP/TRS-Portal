@@ -1,18 +1,21 @@
 // ===============================
 // CONFIGURACIÓN
 // ===============================
-const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6d8357a2ad047a792bf75dea76d7263/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=u4UYD3Dn29Afv19GAjpexKOTxK9DTEBtmYa0gOz-aDI";
+const FLOW_URL = "TU_URL_DEL_FLOJO_AQUI"; // Pega la URL de tu Power Automate
 
 // ===============================
 // FUNCIÓN PRINCIPAL
 // ===============================
 async function enviarDatos() {
-    const proveedor_id = document.getElementById("proveedor").value;
+    const proveedor_id = document.getElementById("proveedor").value.trim();
     const resultadoDiv = document.getElementById("resultado");
     const tbody = document.querySelector("#tablaSolpeds tbody");
+
+    // Limpiar tabla y mensaje
     tbody.innerHTML = "";
     resultadoDiv.innerText = "Consultando datos...";
 
+    // Payload para Power Automate
     const payload = {
         proveedor_id: proveedor_id
     };
@@ -29,6 +32,8 @@ async function enviarDatos() {
 
         const data = await response.json();
 
+        console.log("Respuesta del flujo:", data); // DEBUG
+
         if (!data.solpeds || data.solpeds.length === 0) {
             resultadoDiv.innerText = "No se encontraron SOLPEDs para este proveedor.";
             return;
@@ -40,10 +45,10 @@ async function enviarDatos() {
         data.solpeds.forEach(s => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${s.Numero || ""}</td>
-                    <td>${s.Material || ""}</td>
-                    <td>${s.Cantidad || ""}</td>
-                    <td>${s.Estado || ""}</td>
+                    <td>${s.numero || ""}</td>
+                    <td>${s.material || ""}</td>
+                    <td>${s.cantidad || ""}</td>
+                    <td>${s.estado || ""}</td>
                 </tr>`;
         });
 
