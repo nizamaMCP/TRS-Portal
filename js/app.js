@@ -1,7 +1,7 @@
 // ===============================
 // CONFIGURACIÓN
 // ===============================
-const FLOW_URL = "PEGA_AQUI_TU_URL_DE_POWER_AUTOMATE";
+const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9cd7b812c9bd451fa5bd034d1a66ac42/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=b8Ekw__2omVqmwWeLRaV36JXcXjnbt4t_xraOkDq5-A";
 
 // ===============================
 // FUNCIÓN PRINCIPAL
