@@ -1,7 +1,7 @@
 // ===============================
 // CONFIGURACIÓN
 // ===============================
-const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9cd7b812c9bd451fa5bd034d1a66ac42/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=b8Ekw__2omVqmwWeLRaV36JXcXjnbt4t_xraOkDq5-A";
+const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6d8357a2ad047a792bf75dea76d7263/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=u4UYD3Dn29Afv19GAjpexKOTxK9DTEBtmYa0gOz-aDI";
 
 // ===============================
 // FUNCIÓN PRINCIPAL
