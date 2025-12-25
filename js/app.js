@@ -40,10 +40,11 @@ async function enviarDatos() {
         // -----------------------------
         // Manejo de solpeds
         // -----------------------------
-        // Convertir solpeds a array si viene como string
         let solpedsArray = [];
+
         if (data.solpeds) {
             try {
+                // Si viene como string JSON, parsearlo
                 solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
             } catch (e) {
                 console.error("Error parseando solpeds:", e);
@@ -51,13 +52,15 @@ async function enviarDatos() {
                 return;
             }
         }
-        
+
         if (!Array.isArray(solpedsArray) || solpedsArray.length === 0) {
             resultadoDiv.innerText = "No se encontraron SOLPEDs para este proveedor.";
             return;
         }
-        
-        // Llenar tabla usando solpedsArray, no data.solpeds
+
+        resultadoDiv.innerText = `✅ ${solpedsArray.length} SOLPED(s) encontradas`;
+
+        // Llenar tabla
         solpedsArray.forEach(s => {
             tbody.innerHTML += `
                 <tr>
@@ -67,7 +70,6 @@ async function enviarDatos() {
                     <td>${s.estado || ""}</td>
                 </tr>`;
         });
-
 
     } catch (error) {
         console.error(error);
