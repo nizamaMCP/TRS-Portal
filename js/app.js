@@ -7,25 +7,19 @@ const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.a
 // FUNCIÓN PRINCIPAL
 // ===============================
 async function enviarDatos() {
-
-    const usuario = document.getElementById("usuario").value;
-    const accion = document.getElementById("accion").value;
-    const comentario = document.getElementById("comentario").value;
+    const proveedor_id = document.getElementById("proveedor").value;
+    const resultadoDiv = document.getElementById("resultado");
+    const tbody = document.querySelector("#tablaSolpeds tbody");
+    tbody.innerHTML = "";
+    resultadoDiv.innerText = "Consultando datos...";
 
     const payload = {
-        usuario: usuario,
-        accion: accion,
-        comentario: comentario
+        proveedor_id: proveedor_id
     };
-
-    document.getElementById("resultado").innerText = "Enviando datos...";
 
     try {
         const response = await fetch(FLOW_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify(payload)
         });
 
@@ -35,12 +29,26 @@ async function enviarDatos() {
 
         const data = await response.json();
 
-        document.getElementById("resultado").innerText =
-            "✅ " + data.mensaje;
+        if (!data.solpeds || data.solpeds.length === 0) {
+            resultadoDiv.innerText = "No se encontraron SOLPEDs para este proveedor.";
+            return;
+        }
+
+        resultadoDiv.innerText = `✅ ${data.solpeds.length} SOLPED(s) encontradas`;
+
+        // Llenar tabla
+        data.solpeds.forEach(s => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${s["Solped-Pos"] || s.numero}</td>
+                    <td>${s.Material || ""}</td>
+                    <td>${s.Cantidad || ""}</td>
+                    <td>${s.Estado || ""}</td>
+                </tr>`;
+        });
 
     } catch (error) {
         console.error(error);
-        document.getElementById("resultado").innerText =
-            "❌ Error al enviar información";
+        resultadoDiv.innerText = "❌ Error al consultar información";
     }
 }
