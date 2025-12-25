@@ -1,28 +1,88 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Portal de Proveedores - SOLPED</title>
-  <link rel="stylesheet" href="css/styles.css">
+    <meta charset="UTF-8">
+    <title>TRS Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f3c88;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #1f3c88;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #162d66;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>Portal de Proveedores</h1>
-  <p>Consulta de Solicitudes de Pedido (SOLPED)</p>
-</header>
+    <div class="container">
+        <h1>TRS – Portal Proveedores</h1>
 
-<main>
-  <section id="consulta">
-    <h2>Consulta</h2>
-    <p>Portal en construcción</p>
-  </section>
-</main>
+        <label>Usuario</label>
+        <input type="text" id="usuario" value="nizamaMCP">
 
-<footer>
-  <p>© Empresa - Portal SOLPED</p>
-</footer>
+        <label>Acción</label>
+        <input type="text" id="accion" value="consulta_solped">
 
-<script src="js/app.js"></script>
+        <label>Comentario</label>
+        <textarea id="comentario" rows="4">Prueba desde GitHub Pages</textarea>
+
+        <button onclick="enviarDatos()">Enviar</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
