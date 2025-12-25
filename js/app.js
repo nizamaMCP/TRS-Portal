@@ -21,6 +21,9 @@ async function enviarDatos() {
     };
 
     try {
+        // DEBUG: ver qué se envía al flujo
+        console.log("Payload que se envía:", JSON.stringify(payload));
+        
         const response = await fetch(FLOW_URL, {
             method: "POST",
             body: JSON.stringify(payload)
