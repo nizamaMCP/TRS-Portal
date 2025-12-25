@@ -79,6 +79,10 @@
             background-color: #1f3c88;
             color: white;
         }
+
+        td[contenteditable="true"] {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +94,7 @@
         <input type="text" id="proveedor" value="PROV_A">
 
         <button onclick="enviarDatos()">Consultar SOLPEDs</button>
+        <button onclick="guardarCambios()">Guardar cambios</button>
 
         <div id="resultado"></div>
 
