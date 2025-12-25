@@ -15,9 +15,11 @@ async function enviarDatos() {
     tbody.innerHTML = "";
     resultadoDiv.innerText = "Consultando datos...";
 
+    // Payload para Power Automate
     const payload = { proveedor_id };
 
     try {
+        // DEBUG: ver qué se envía al flujo
         console.log("Payload que se envía:", JSON.stringify(payload));
 
         const response = await fetch(FLOW_URL, {
@@ -33,7 +35,7 @@ async function enviarDatos() {
         }
 
         const data = await response.json();
-        console.log("Respuesta del flujo:", data);
+        console.log("Respuesta del flujo:", data); // DEBUG
 
         // -----------------------------
         // Manejo de solpeds
@@ -41,20 +43,12 @@ async function enviarDatos() {
         let solpedsArray = [];
 
         if (data.solpeds) {
-            // Forzar parseo si viene como string
-            if (typeof data.solpeds === "string") {
-                try {
-                    solpedsArray = JSON.parse(data.solpeds);
-                } catch (parseError) {
-                    console.error("Error parseando solpeds:", parseError);
-                    resultadoDiv.innerText = "❌ Error al procesar los SOLPEDs (JSON inválido)";
-                    return;
-                }
-            } else if (Array.isArray(data.solpeds)) {
-                solpedsArray = data.solpeds;
-            } else {
-                console.warn("solpeds no es un array ni string:", data.solpeds);
-                resultadoDiv.innerText = "❌ Formato de datos inesperado";
+            try {
+                // Si viene como string JSON, parsearlo
+                solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
+            } catch (e) {
+                console.error("Error parseando solpeds:", e);
+                resultadoDiv.innerText = "❌ Error al procesar los SOLPEDs";
                 return;
             }
         }
@@ -67,7 +61,6 @@ async function enviarDatos() {
         resultadoDiv.innerText = `✅ ${solpedsArray.length} SOLPED(s) encontradas`;
 
         // Llenar tabla
-        tbody.innerHTML = ""; // Asegurarse de limpiar
         solpedsArray.forEach(s => {
             tbody.innerHTML += `
                 <tr>
