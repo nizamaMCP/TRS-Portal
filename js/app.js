@@ -67,35 +67,35 @@ async function enviarDatos() {
 // ===============================
 async function guardarCambios() {
     const tbody = document.querySelector("#tablaSolpeds tbody");
-    const filas = Array.from(tbody.querySelectorAll("tr"));
+    const resultadoDiv = document.getElementById("resultado");
 
-    const cambios = filas.map(fila => {
-        const celdas = fila.querySelectorAll("td");
-        return {
-            numero: celdas[0].innerText.trim(),
-            material: celdas[1].innerText.trim(),
-            cantidad: celdas[2].innerText.trim(),
-            estado: celdas[3].innerText.trim()
-        };
-    });
+    // Recopilar cambios de la tabla
+    const cambios = Array.from(tbody.querySelectorAll("tr")).map(tr => ({
+        numero: tr.children[0].innerText.trim(),
+        material: tr.children[1].innerText.trim(),
+        cantidad: tr.children[2].innerText.trim(),
+        estado: tr.children[3].innerText.trim()
+    }));
 
-    console.log("Cambios a enviar:", cambios);
+    if (cambios.length === 0) {
+        resultadoDiv.innerText = "No hay cambios para guardar.";
+        return;
+    }
 
     try {
         const response = await fetch(FLOW_UPDATE_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ solpeds: cambios })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({solpeds: cambios})
         });
 
         if (!response.ok) throw new Error("Error HTTP: " + response.status);
 
         const data = await response.json();
-        console.log("Respuesta del flujo de actualización:", data);
+        resultadoDiv.innerText = `✅ ${data.message} (Registros: ${data.updatedCount})`;
 
-        alert("✅ Cambios guardados correctamente!");
     } catch (error) {
         console.error(error);
-        alert("❌ Error al guardar los cambios");
+        resultadoDiv.innerText = "❌ Error al guardar los cambios";
     }
 }
