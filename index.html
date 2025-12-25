@@ -14,8 +14,8 @@
         }
 
         .container {
-            max-width: 600px;
-            margin: 80px auto;
+            max-width: 800px;
+            margin: 50px auto;
             background: white;
             padding: 30px;
             border-radius: 8px;
@@ -33,7 +33,7 @@
             font-weight: bold;
         }
 
-        input, textarea {
+        input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -62,6 +62,23 @@
             text-align: center;
             font-weight: bold;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1f3c88;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -69,18 +86,24 @@
     <div class="container">
         <h1>TRS – Portal Proveedores</h1>
 
-        <label>Usuario</label>
-        <input type="text" id="usuario" value="nizamaMCP">
+        <label>Proveedor</label>
+        <input type="text" id="proveedor" value="PROV_A">
 
-        <label>Acción</label>
-        <input type="text" id="accion" value="consulta_solped">
-
-        <label>Comentario</label>
-        <textarea id="comentario" rows="4">Prueba desde GitHub Pages</textarea>
-
-        <button onclick="enviarDatos()">Enviar</button>
+        <button onclick="enviarDatos()">Consultar SOLPEDs</button>
 
         <div id="resultado"></div>
+
+        <table id="tablaSolpeds">
+            <thead>
+                <tr>
+                    <th>SOLPED</th>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
     <script src="js/app.js"></script>
