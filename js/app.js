@@ -40,7 +40,7 @@ async function enviarDatos() {
         data.solpeds.forEach(s => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${s["Solped-Pos"] || s.numero}</td>
+                    <td>${s.Numero || ""}</td>
                     <td>${s.Material || ""}</td>
                     <td>${s.Cantidad || ""}</td>
                     <td>${s.Estado || ""}</td>
