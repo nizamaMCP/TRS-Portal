@@ -37,10 +37,14 @@ async function enviarDatos() {
         const data = await response.json();
         console.log("Respuesta del flujo:", data); // DEBUG
 
-        // Convertir solpeds a array si viene como string
+        // -----------------------------
+        // Manejo de solpeds
+        // -----------------------------
         let solpedsArray = [];
+
         if (data.solpeds) {
             try {
+                // Si viene como string JSON, parsearlo
                 solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
             } catch (e) {
                 console.error("Error parseando solpeds:", e);
@@ -49,7 +53,7 @@ async function enviarDatos() {
             }
         }
 
-        if (solpedsArray.length === 0) {
+        if (!Array.isArray(solpedsArray) || solpedsArray.length === 0) {
             resultadoDiv.innerText = "No se encontraron SOLPEDs para este proveedor.";
             return;
         }
