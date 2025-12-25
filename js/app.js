@@ -38,13 +38,12 @@ async function enviarDatos() {
         console.log("Respuesta del flujo:", data); // DEBUG
 
         // -----------------------------
-        // Manejo de solpeds
+        // Manejo de solpeds (string -> array)
         // -----------------------------
         let solpedsArray = [];
 
         if (data.solpeds) {
             try {
-                // Si viene como string JSON, parsearlo
                 solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
             } catch (e) {
                 console.error("Error parseando solpeds:", e);
@@ -60,7 +59,9 @@ async function enviarDatos() {
 
         resultadoDiv.innerText = `✅ ${solpedsArray.length} SOLPED(s) encontradas`;
 
+        // -----------------------------
         // Llenar tabla
+        // -----------------------------
         solpedsArray.forEach(s => {
             tbody.innerHTML += `
                 <tr>
