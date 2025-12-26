@@ -55,6 +55,12 @@ async function enviarDatos() {
 
         solpedsOriginal = JSON.parse(JSON.stringify(solpedsArray));
 
+        solpedsOriginal.forEach(s => {
+            s.fecha_recep_comp = excelDateToJSDate(s.fecha_recep_comp);
+            s.fecha_termino = excelDateToJSDate(s.fecha_termino);
+            s.fecha_despacho_real = excelDateToJSDate(s.fecha_despacho_real);
+        });
+
         if (!solpedsArray.length) {
             resultadoDiv.innerText = "No se encontraron SOLPEDs";
             return;
