@@ -1,23 +1,96 @@
+/* Estilos generales */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f4f6f8;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
 }
 
-header {
-  background: #003366;
-  color: white;
-  padding: 20px;
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-main {
-  padding: 20px;
+h1 {
+    text-align: center;
+    color: #1f3c88;
 }
 
-footer {
-  background: #eee;
-  padding: 10px;
-  text-align: center;
-  font-size: 12px;
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
 }
 
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+#resultado {
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #1f3c88;
+    color: white;
+}
+
+td[contenteditable="true"] {
+    background-color: #f9f9f9;
+}
+
+/* Botón Consultar SOLPEDs */
+button.consultar {
+    background-color: #1f3c88; /* azul */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+button.consultar:hover {
+    background-color: #162d66; /* azul más oscuro */
+}
+
+/* Botón Guardar cambios */
+button.guardar {
+    background-color: #28a745; /* verde */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button.guardar:hover {
+    background-color: #218838; /* verde oscuro */
+}
