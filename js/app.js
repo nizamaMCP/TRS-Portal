@@ -1,5 +1,6 @@
 // Pruebas HTML POST
 //https://reqbin.com/post-online
+// ejemplo: { "proveedor_id": "FERREYROS" }
 
 // ================================
 // CONFIGURACIÓN
@@ -10,16 +11,16 @@ const FLOW_UPDATE_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.enviro
 // ================================
 // VARIABLES GLOBALES
 // ================================
-let solpedsArray = [];      // Datos que se muestran en la tabla
-let solpedsOriginal = [];   // Copia para comparar cambios
+let solpedsArray = [];
+let solpedsOriginal = [];
 
 // ================================
 // FUNCIONES AUXILIARES
 // ================================
 function excelDateToJSDate(excelSerial) {
     if (!excelSerial) return '';
-    const excelEpoch = new Date(1899, 11, 30); // Base de Excel
-    const jsDate = new Date(excelEpoch.getTime() + excelSerial * 24 * 60 * 60 * 1000);
+    const excelEpoch = new Date(1899, 11, 30);
+    const jsDate = new Date(excelEpoch.getTime() + excelSerial * 86400000);
     const yyyy = jsDate.getFullYear();
     const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
     const dd = String(jsDate.getDate()).padStart(2, '0');
@@ -27,7 +28,7 @@ function excelDateToJSDate(excelSerial) {
 }
 
 // ================================
-// FUNCIÓN PRINCIPAL: CONSULTAR
+// CONSULTAR SOLPEDS
 // ================================
 async function enviarDatos() {
     const proveedor_id = document.getElementById("proveedor").value.trim();
@@ -38,40 +39,60 @@ async function enviarDatos() {
     resultadoDiv.innerText = "Consultando datos...";
 
     try {
-        const payload = { proveedor_id };
-        console.log("Payload que se envía:", JSON.stringify(payload));
-
         const response = await fetch(FLOW_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({ proveedor_id })
         });
 
-        if (!response.ok) throw new Error("Error HTTP: " + response.status);
+        if (!response.ok) throw new Error("Error HTTP");
 
         const data = await response.json();
-        console.log("Respuesta del flujo:", data);
 
-        solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
-        solpedsOriginal = JSON.parse(JSON.stringify(solpedsArray)); // copia profunda
+        solpedsArray = typeof data.solpeds === "string"
+            ? JSON.parse(data.solpeds)
+            : data.solpeds;
 
-        if (!Array.isArray(solpedsArray) || solpedsArray.length === 0) {
-            resultadoDiv.innerText = "No se encontraron SOLPEDs para este proveedor.";
+        solpedsOriginal = JSON.parse(JSON.stringify(solpedsArray));
+
+        if (!solpedsArray.length) {
+            resultadoDiv.innerText = "No se encontraron SOLPEDs";
             return;
         }
 
         resultadoDiv.innerText = `✅ ${solpedsArray.length} SOLPED(s) encontradas`;
 
-        // Llenar tabla con input para fecha y cantidad editable
-        tbody.innerHTML = "";
         solpedsArray.forEach((s, i) => {
             tbody.innerHTML += `
                 <tr>
-                    <td>${s.numero}</td>
+                    <td>${s.num_solped}</td>
+                    <td>${s.orden}</td>
+                    <td>${s.estado_orden}</td>
                     <td>${s.material}</td>
-                    <td><input type="date" value="${excelDateToJSDate(s.fecha)}" data-index="${i}" class="fecha-input"></td>
-                    <td><input type="number" min="0" value="${s.cantidad}" data-index="${i}" class="cantidad-input"></td>
-                    <td>${s.estado}</td>
+
+                    <td>
+                        <input type="date"
+                               value="${excelDateToJSDate(s.fecha_recep_comp)}"
+                               data-index="${i}"
+                               data-field="fecha_recep_comp"
+                               class="fecha-input">
+                    </td>
+
+                    <td>
+                        <input type="date"
+                               value="${excelDateToJSDate(s.fecha_termino)}"
+                               data-index="${i}"
+                               data-field="fecha_termino"
+                               class="fecha-input">
+                    </td>
+
+                    <td>
+                        <input type="date"
+                               value="${excelDateToJSDate(s.fecha_despacho_real)}"
+                               data-index="${i}"
+                               data-field="fecha_despacho_real"
+                               class="fecha-input">
+                    </td>
                 </tr>`;
         });
 
@@ -82,41 +103,29 @@ async function enviarDatos() {
 }
 
 // ================================
-// FUNCIÓN: GUARDAR CAMBIOS
+// GUARDAR CAMBIOS
 // ================================
 async function guardarCambios() {
     const resultadoDiv = document.getElementById("resultado");
     const tbody = document.querySelector("#tablaSolpeds tbody");
 
-    const cantidadInputs = tbody.querySelectorAll(".cantidad-input");
     const fechaInputs = tbody.querySelectorAll(".fecha-input");
 
-    cantidadInputs.forEach(input => {
-        const index = parseInt(input.dataset.index);
-        solpedsArray[index].cantidad = input.value.trim();
-    });
-
     fechaInputs.forEach(input => {
-        const index = parseInt(input.dataset.index);
-        solpedsArray[index].fecha = input.value;
+        const index = input.dataset.index;
+        const field = input.dataset.field;
+        solpedsArray[index][field] = input.value;
     });
 
-    const cambios = solpedsArray.filter((fila, i) => 
-        fila.cantidad !== solpedsOriginal[i].cantidad ||
-        fila.fecha !== solpedsOriginal[i].fecha
+    const cambios = solpedsArray.filter((fila, i) =>
+        fila.fecha_recep_comp !== solpedsOriginal[i].fecha_recep_comp ||
+        fila.fecha_termino !== solpedsOriginal[i].fecha_termino ||
+        fila.fecha_despacho_real !== solpedsOriginal[i].fecha_despacho_real
     );
 
-    if (cambios.length === 0) {
+    if (!cambios.length) {
         alert("No hay cambios para guardar");
         return;
-    }
-
-    // Validaciones
-    for (let c of cambios) {
-        if (isNaN(c.cantidad) || Number(c.cantidad) <= 0) {
-            alert(`Cantidad inválida para Solped ${c.numero}`);
-            return;
-        }
     }
 
     resultadoDiv.innerText = "Guardando cambios...";
@@ -128,23 +137,18 @@ async function guardarCambios() {
             body: JSON.stringify({ cambios })
         });
 
-        if (!response.ok) throw new Error("Error HTTP: " + response.status);
-
-        const data = await response.json();
-        console.log("Respuesta actualización:", data);
+        if (!response.ok) throw new Error("Error HTTP");
 
         cambios.forEach(cambio => {
-            const index = solpedsArray.findIndex(s => s.numero === cambio.numero);
-            solpedsOriginal[index].cantidad = cambio.cantidad;
-            solpedsOriginal[index].fecha = cambio.fecha;
-            const tr = tbody.querySelectorAll("tr")[index];
-            tr.style.backgroundColor = "#d4edda"; // verde suave
+            const index = solpedsArray.findIndex(s => s.num_solped === cambio.num_solped);
+            solpedsOriginal[index] = { ...cambio };
+            tbody.querySelectorAll("tr")[index].style.backgroundColor = "#d4edda";
         });
 
-        resultadoDiv.innerText = `✅ ${cambios.length} cambio(s) guardado(s) correctamente`;
+        resultadoDiv.innerText = `✅ ${cambios.length} cambio(s) guardados`;
 
     } catch (error) {
         console.error(error);
-        resultadoDiv.innerText = "❌ Error al guardar los cambios";
+        resultadoDiv.innerText = "❌ Error al guardar cambios";
     }
 }
