@@ -5,17 +5,30 @@
 // CONFIGURACIÓN
 // ================================
 const FLOW_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6d8357a2ad047a792bf75dea76d7263/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=u4UYD3Dn29Afv19GAjpexKOTxK9DTEBtmYa0gOz-aDI";
-const FLOW_UPDATE_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ea2f00bee9f044a2ba4d48014b3f80e8/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZnmmOtuo8KyCPFW8HIzRRXlg2teazYqjSYCHirsBv2s"; // URL del flujo de actualización
+const FLOW_UPDATE_URL = "https://default9cfb9ab8c5ae49a2ab6e7df4450810.04.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/ea2f00bee9f044a2ba4d48014b3f80e8/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ZnmmOtuo8KyCPFW8HIzRRXlg2teazYqjSYCHirsBv2s";
 
-// ===============================
+// ================================
 // VARIABLES GLOBALES
-// ===============================
+// ================================
 let solpedsArray = [];      // Datos que se muestran en la tabla
 let solpedsOriginal = [];   // Copia para comparar cambios
 
-// ===============================
+// ================================
+// FUNCIONES AUXILIARES
+// ================================
+function excelDateToJSDate(excelSerial) {
+    if (!excelSerial) return '';
+    const excelEpoch = new Date(1899, 11, 30); // Base de Excel
+    const jsDate = new Date(excelEpoch.getTime() + excelSerial * 24 * 60 * 60 * 1000);
+    const yyyy = jsDate.getFullYear();
+    const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(jsDate.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+// ================================
 // FUNCIÓN PRINCIPAL: CONSULTAR
-// ===============================
+// ================================
 async function enviarDatos() {
     const proveedor_id = document.getElementById("proveedor").value.trim();
     const resultadoDiv = document.getElementById("resultado");
@@ -39,7 +52,6 @@ async function enviarDatos() {
         const data = await response.json();
         console.log("Respuesta del flujo:", data);
 
-        // Parsear solpeds si vienen como string
         solpedsArray = typeof data.solpeds === "string" ? JSON.parse(data.solpeds) : data.solpeds;
         solpedsOriginal = JSON.parse(JSON.stringify(solpedsArray)); // copia profunda
 
@@ -50,13 +62,14 @@ async function enviarDatos() {
 
         resultadoDiv.innerText = `✅ ${solpedsArray.length} SOLPED(s) encontradas`;
 
-        // Llenar tabla con input para cantidad editable
+        // Llenar tabla con input para fecha y cantidad editable
         tbody.innerHTML = "";
         solpedsArray.forEach((s, i) => {
             tbody.innerHTML += `
                 <tr>
                     <td>${s.numero}</td>
                     <td>${s.material}</td>
+                    <td><input type="date" value="${excelDateToJSDate(s.fecha)}" data-index="${i}" class="fecha-input"></td>
                     <td><input type="number" min="0" value="${s.cantidad}" data-index="${i}" class="cantidad-input"></td>
                     <td>${s.estado}</td>
                 </tr>`;
@@ -68,22 +81,30 @@ async function enviarDatos() {
     }
 }
 
-// ===============================
+// ================================
 // FUNCIÓN: GUARDAR CAMBIOS
-// ===============================
+// ================================
 async function guardarCambios() {
     const resultadoDiv = document.getElementById("resultado");
     const tbody = document.querySelector("#tablaSolpeds tbody");
 
-    // Leer los valores editados
-    const inputs = tbody.querySelectorAll(".cantidad-input");
-    inputs.forEach(input => {
+    const cantidadInputs = tbody.querySelectorAll(".cantidad-input");
+    const fechaInputs = tbody.querySelectorAll(".fecha-input");
+
+    cantidadInputs.forEach(input => {
         const index = parseInt(input.dataset.index);
         solpedsArray[index].cantidad = input.value.trim();
     });
 
-    // Filtrar solo los cambios
-    const cambios = solpedsArray.filter((fila, i) => fila.cantidad !== solpedsOriginal[i].cantidad);
+    fechaInputs.forEach(input => {
+        const index = parseInt(input.dataset.index);
+        solpedsArray[index].fecha = input.value;
+    });
+
+    const cambios = solpedsArray.filter((fila, i) => 
+        fila.cantidad !== solpedsOriginal[i].cantidad ||
+        fila.fecha !== solpedsOriginal[i].fecha
+    );
 
     if (cambios.length === 0) {
         alert("No hay cambios para guardar");
@@ -112,10 +133,10 @@ async function guardarCambios() {
         const data = await response.json();
         console.log("Respuesta actualización:", data);
 
-        // Actualizar copia original y resaltar filas modificadas
         cambios.forEach(cambio => {
             const index = solpedsArray.findIndex(s => s.numero === cambio.numero);
             solpedsOriginal[index].cantidad = cambio.cantidad;
+            solpedsOriginal[index].fecha = cambio.fecha;
             const tr = tbody.querySelectorAll("tr")[index];
             tr.style.backgroundColor = "#d4edda"; // verde suave
         });
