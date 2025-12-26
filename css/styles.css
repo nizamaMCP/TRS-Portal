@@ -26,12 +26,30 @@ label {
     font-weight: bold;
 }
 
-input {
+/* Input de proveedor */
+#proveedor {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
     border-radius: 4px;
     border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Inputs dentro de la tabla (Fecha y Cantidad) */
+#tablaSolpeds input {
+    width: 100%;           
+    box-sizing: border-box; 
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+#tablaSolpeds input:focus {
+    outline: none;
+    border-color: #1f3c88;
+    box-shadow: 0 0 3px rgba(31,60,136,0.5);
 }
 
 #resultado {
@@ -63,7 +81,7 @@ td[contenteditable="true"] {
 
 /* Botón Consultar SOLPEDs */
 button.consultar {
-    background-color: #1f3c88; /* azul */
+    background-color: #1f3c88; 
     color: white;
     padding: 12px 20px;
     border: none;
@@ -75,12 +93,12 @@ button.consultar {
 }
 
 button.consultar:hover {
-    background-color: #162d66; /* azul más oscuro */
+    background-color: #162d66; 
 }
 
 /* Botón Guardar cambios */
 button.guardar {
-    background-color: #28a745; /* verde */
+    background-color: #28a745; 
     color: white;
     padding: 12px 20px;
     border: none;
@@ -92,5 +110,5 @@ button.guardar {
 }
 
 button.guardar:hover {
-    background-color: #218838; /* verde oscuro */
+    background-color: #218838; 
 }
